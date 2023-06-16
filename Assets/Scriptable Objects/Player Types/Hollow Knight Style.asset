@@ -51,7 +51,9 @@ MonoBehaviour:
   dashEndRunLerp: 0
   dashRefillTime: 0
   dashInputBufferTime: 0
-  hasHook: 0
+  hasHook: 1
   hookDistance: 5
   hookMinimumSpeed: 0
   hookSpeedMultiplier: 0
+  enlargeHitboxValue: 0
+  enlargeHitboxDelay: 0

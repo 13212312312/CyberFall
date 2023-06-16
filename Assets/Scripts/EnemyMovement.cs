@@ -7,7 +7,7 @@ using Astar;
 public class EnemyMovement : MonoBehaviour
 {
     #region COMPONENTS
-    private GameObject SpawnPoint;
+    private GameObject[] SpawnPoints;
     private MapManager mapManager;
     private GameObject Player;
     private static int EnemyCount;
@@ -40,7 +40,7 @@ public class EnemyMovement : MonoBehaviour
 
     void Awake() {
         Player = GameObject.FindWithTag("Player");
-        SpawnPoint = GameObject.FindWithTag("EnemySpawnPoint");
+        SpawnPoints = GameObject.FindGameObjectsWithTag("EnemySpawnPoint");
     }
     void Start()
     {
@@ -54,7 +54,7 @@ public class EnemyMovement : MonoBehaviour
     }
     void OnEnable() {
         moveCooldown = freezeDelay;
-        transform.position = SpawnPoint.transform.position;
+        transform.position = SpawnPoints[Random.Range(0,SpawnPoints.Length)].transform.position;
     }
 
     void GetMap()

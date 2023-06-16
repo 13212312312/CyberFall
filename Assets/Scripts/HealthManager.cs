@@ -11,6 +11,7 @@ public class HealthManager : MonoBehaviour
     [SerializeField] GameObject coin;
     [SerializeField] int coinNumber = 4;
     [SerializeField] GameObject loseScreen;
+    private bool dead = false;
     Slider healthBar;
 
     void Start()
@@ -42,6 +43,7 @@ public class HealthManager : MonoBehaviour
             if(tag == "Enemy")
             {
                 SpawnCoins();
+                dead = true;
                 Destroy(this.gameObject.transform.parent.gameObject);
             }
             if(tag == "Player")
@@ -60,6 +62,7 @@ public class HealthManager : MonoBehaviour
 
     private void SpawnCoins()
     {
+        if(dead) return;
         for(int i = 0; i <= coinNumber; i++)
         {
             GameObject spawnedCoint = Instantiate(coin, transform.position, Quaternion.identity);

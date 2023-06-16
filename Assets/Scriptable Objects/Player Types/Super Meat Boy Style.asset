@@ -42,15 +42,15 @@ MonoBehaviour:
   slideAccel: 3
   coyoteTime: 0.2
   jumpInputBufferTime: 0.2
-  dashAmount: 0
-  dashSpeed: 0
+  dashAmount: 1
+  dashSpeed: 24.1
   dashSleepTime: 0
-  dashAttackTime: 0
+  dashAttackTime: 0.3
   dashEndTime: 0
-  dashEndSpeed: {x: 0, y: 0}
-  dashEndRunLerp: 0
-  dashRefillTime: 0
-  dashInputBufferTime: 0
+  dashEndSpeed: {x: 0.33, y: 0.12}
+  dashEndRunLerp: 0.573
+  dashRefillTime: 1
+  dashInputBufferTime: 0.286
   hasHook: 1
   hookDistance: 5
   hookMinimumSpeed: 20

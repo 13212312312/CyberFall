@@ -99,7 +99,7 @@ public class Level{
                 else
                 {
                     imageType = 1;
-                    imageRotation = 0;
+                    imageRotation = 3;
                     for(int i = 1; i < 4; i++)
                     {
                         if(NeighBour[i] && NeighBour[i-1])
