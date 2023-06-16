@@ -45,8 +45,4 @@ public class LegMover : MonoBehaviour
             transform.position = startpoint + Random.Range(0.8f,1f) * groundDistance * dir;
         }
     }
-
- 
- 
- 
 }
