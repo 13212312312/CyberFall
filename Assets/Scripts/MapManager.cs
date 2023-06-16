@@ -31,7 +31,6 @@ public class Level{
     public void Update()
     {
         if(Completed) return;
-        Debug.Log(enemyHolderScript.GetEnemies());
         if(enemyHolderScript.GetEnemies() == 0)
         {
             Completed = true;

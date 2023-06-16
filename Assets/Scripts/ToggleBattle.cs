@@ -21,7 +21,6 @@ public class ToggleBattle : MonoBehaviour
     private void OnTriggerStay2D(Collider2D other) {
         if(other.tag == "Player")
         {
-            Debug.Log("START");
             mapManager.GetCurrentLevel().EnterBattle();
         }
     }
