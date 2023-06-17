@@ -6,7 +6,6 @@ public class BulletScript : MonoBehaviour
 {
     // Start is called before the first frame update
     private Vector3 direction;
-    private bool canMove = false;
     private float Damage;  
     private float Speed;
 	[SerializeField] private LayerMask _groundLayer;

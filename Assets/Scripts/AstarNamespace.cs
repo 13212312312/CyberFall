@@ -98,7 +98,7 @@ namespace Astar
                 int positionx,positiony;
                 positionx=current.X;
                 positiony=current.Y;
-                if(walking)
+                if(walking && !NearWall(positionx,positiony,map))
                 {
                     //go to closest tile near ground
                     while(map[positiony-1][positionx] == ' ' || map[positiony-1][positionx] == 'B')
@@ -114,7 +114,7 @@ namespace Astar
                     {
                         if(lasty != positiony)
                         {
-                            //add corner tile just in case
+                            //add corner tile
                             if(lasty < positiony)
                             {
                                 result.Add(new Vector3Int(lastx, positiony, 0) - new Vector3Int(width/2 + 1, height/2 - 1, 0));
@@ -133,6 +133,21 @@ namespace Astar
             }  
             return result;
         }  
+        static bool NearWall(int x, int y, string[] map)
+        {
+            if (map[y - 1][x - 1] == 'X' || 
+            map[y - 1][x] == 'X' || 
+            map[y - 1][x + 1] == 'X' || 
+            map[y][x - 1] == 'X' || 
+            map[y][x + 1] == 'X' || 
+            map[y + 1][x - 1] == 'X' || 
+            map[y + 1][x] == 'X' || 
+            map[y + 1][x + 1] == 'X')
+            {
+            return true;
+            }
+            return false;
+        }
         
         static List<Location> GetWalkableAdjacentSquares(int x, int y, string[] map, List<Location> openList)  
         {  
