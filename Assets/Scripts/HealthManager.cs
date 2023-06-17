@@ -11,11 +11,23 @@ public class HealthManager : MonoBehaviour
     [SerializeField] GameObject coin;
     [SerializeField] int coinNumber = 4;
     [SerializeField] GameObject loseScreen;
+    [SerializeField] public float invulnerabilityWindowDuration;
+    private Upgrades upgradeManager;
+    public float currentInvulnerability;
     private bool dead = false;
     Slider healthBar;
 
     void Start()
     {
+        upgradeManager = FindObjectOfType<Upgrades>();
+        if(upgradeManager.IncreasedHealth.owned && tag == "Player" )
+        {
+            health = health * 2;
+        }
+        if(upgradeManager.IncreasedInvulnerability.owned && tag == "Player" )
+        {
+            invulnerabilityWindowDuration = invulnerabilityWindowDuration * 2;
+        }
         currentHealth = health;
         healthBar = canvas.transform.GetChild(0).GetComponent<Slider>();
         healthBar.maxValue = health;
@@ -28,6 +40,10 @@ public class HealthManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(currentInvulnerability > 0)
+        {
+            currentInvulnerability -= Time.deltaTime;
+        }
         if(currentHealth != health)
         {
             canvas.SetActive(true);
@@ -36,7 +52,15 @@ public class HealthManager : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
-        currentHealth -= damage;
+        if(tag == "Enemy")
+        {
+            currentHealth -= damage;
+        }
+        if(tag == "Player" && currentInvulnerability <= 0)
+        {
+            currentHealth -= damage;
+            currentInvulnerability = invulnerabilityWindowDuration;
+        }
         healthBar.value = currentHealth;
         if(currentHealth <= 0)
         {

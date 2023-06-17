@@ -10,12 +10,27 @@ public class Shooting : MonoBehaviour
     [SerializeField] public float attackSpeed = 1f;
     [SerializeField] public int numberOfBullets;
     [SerializeField] public float spreadDistance;
+    private Upgrades upgradeManager;
     private Camera cam;
     private float cooldown;
     // Start is called before the first frame update
     void Start()
     {
         cam = FindObjectOfType<Camera>();
+        upgradeManager = FindObjectOfType<Upgrades>();
+        
+        if(upgradeManager.MoreBullets.owned)
+        {
+            numberOfBullets *= 2;
+        }
+        if(upgradeManager.IncreasedAttackSpeed.owned)
+        {
+            attackSpeed /= 2;
+        }
+        if(upgradeManager.IncreasedDamage.owned)
+        {
+            bulletDamage *= 2;
+        }
     }
 
     // Update is called once per frame

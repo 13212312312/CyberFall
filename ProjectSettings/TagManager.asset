@@ -8,6 +8,7 @@ TagManager:
   - Grid
   - EnemySpawnPoint
   - Coin
+  - Upgrades
   layers:
   - Default
   - TransparentFX

@@ -8,6 +8,7 @@ public class PlayerMovement : MonoBehaviour
 	#region COMPONENTS
     public Rigidbody2D RB { get; private set; }
 	public PlayerAnimator AnimHandler { get; private set; }
+    private Upgrades upgradeManager;
 	[SerializeField] public GameObject hookRange;
 	#endregion
 
@@ -81,6 +82,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Awake()
 	{
+        upgradeManager = FindObjectOfType<Upgrades>();
 		RB = GetComponent<Rigidbody2D>();
 		AnimHandler = GetComponent<PlayerAnimator>();
 	}

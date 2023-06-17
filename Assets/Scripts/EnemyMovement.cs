@@ -20,6 +20,7 @@ public class EnemyMovement : MonoBehaviour
     private int width;
     private int height;
     Tilemap tilemap;
+    [SerializeField] float CollisionDamage;
     [SerializeField] float speed;
     [SerializeField] float cooldown;
     float currentCooldown;
@@ -34,6 +35,15 @@ public class EnemyMovement : MonoBehaviour
     [SerializeField] public GameObject enemyBullet;
     [SerializeField] public float bulletDamage;
     [SerializeField] public float bulletSpeed;
+    [SerializeField] public bool bomber;
+    [SerializeField] public float explosionRadiusTrigger;
+    [SerializeField] public float explosionRadiusRange;
+    [SerializeField] public float explosionDamage;
+    [SerializeField] public float explosionDetonationDuration;
+    private float currentExplosionTime;
+    private bool exploding;
+    private int Type = 0;
+    
     private bool stopToShoot = false;
     private Camera cam;
     private float moveCooldown = 0;
@@ -52,6 +62,14 @@ public class EnemyMovement : MonoBehaviour
         Player = GameObject.FindWithTag("Player");
         SpawnPoints = GameObject.FindGameObjectsWithTag("EnemySpawnPoint");
         cam = FindObjectOfType<Camera>();
+        Type = 3;
+        if(bomber)
+            Type = 0;
+        if(shooter)
+            Type = 1;
+        if(walking) 
+            Type = 2;
+        
     }
     void Start()
     {
@@ -132,7 +150,6 @@ public class EnemyMovement : MonoBehaviour
         }
         if(shooter)
         {
-            Debug.Log(stopToShoot);
             if(currentShootingCooldown > 0)
             {
                 currentShootingCooldown -= Time.deltaTime;
@@ -147,11 +164,29 @@ public class EnemyMovement : MonoBehaviour
                 stopToShoot = false;
             }
         }
-        if(!canMove)
+        if(bomber)
+        {
+            if(Vector2.Distance(Player.transform.position,transform.position) < explosionRadiusTrigger)
+            {
+                exploding = true;
+            }
+        }
+        if(exploding)
+        {
+            currentExplosionTime += Time.deltaTime;
+            if(currentExplosionTime >= explosionDetonationDuration)
+            {
+                if(Vector2.Distance(Player.transform.position,transform.position) < explosionRadiusRange)
+                {
+                    Player.GetComponent<HealthManager>().TakeDamage(explosionDamage);
+                }
+                Destroy(transform.parent.gameObject);
+            }
+        }
+        if(!canMove || exploding || stopToShoot)
         {
             return;
         }
-        if(stopToShoot) return;
         currentCooldown -= Time.deltaTime;
         if (currentCooldown <= 0)
         {
@@ -199,20 +234,28 @@ public class EnemyMovement : MonoBehaviour
             GetNextPos();
         }
     }
+    public int GetEnemyType()
+    {
+        return Type;
+    }
 
     void OnTriggerStay2D(Collider2D col)
     {
         if(col.gameObject.CompareTag("Enemy"))
         {
-            var otherID = col.gameObject.GetComponent<EnemyMovement>().GetID() ;
-            if(otherID > id)
+            var other = col.gameObject.GetComponent<EnemyMovement>();
+            if(other.GetID() > id && other.GetEnemyType() <= Type)
             {
                 canMove = false;
-                if(!colWithID.Contains(otherID))
+                if(!colWithID.Contains(other.GetID()))
                 {
-                    colWithID.Add(otherID);
+                    colWithID.Add(other.GetID());
                 }
             }
+        }
+        if(col.gameObject.CompareTag("Player") && ! shooter && ! bomber)
+        {
+            col.gameObject.GetComponent<HealthManager>().TakeDamage(CollisionDamage);
         }
     }    
 
@@ -220,10 +263,10 @@ public class EnemyMovement : MonoBehaviour
     {
         if(col.gameObject.CompareTag("Enemy"))
         {
-            var otherID = col.gameObject.GetComponent<EnemyMovement>().GetID() ;
-            if(otherID > id)
+            var other = col.gameObject.GetComponent<EnemyMovement>();
+            if(other.GetID() > id && other.GetEnemyType() <= Type)
             {
-                colWithID.Remove(otherID);
+                colWithID.Remove(other.GetID());
                 if(colWithID.Count == 0)
                 {
                     canMove = true;
@@ -245,6 +288,23 @@ public class EnemyMovement : MonoBehaviour
     public void ResetCooldown()
     {
         currentCooldown = 0;
+    }
+    void OnDrawGizmosSelected()
+    {
+        if(bomber)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawSphere(transform.position, explosionRadiusTrigger);
+            if(exploding)
+            {
+                Gizmos.DrawSphere(transform.position, explosionRadiusRange);
+            }
+        }
+        if(shooter)
+        {
+            Gizmos.color = Color.magenta;
+            Gizmos.DrawSphere(transform.position, shootingRange);
+        }
     }
 
 }

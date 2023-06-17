@@ -8,8 +8,13 @@ public class BulletScript : MonoBehaviour
     private Vector3 direction;
     private float Damage;  
     private float Speed;
+    private Upgrades upgradeManager;
 	[SerializeField] private LayerMask _groundLayer;
 	[SerializeField] private Vector2 _colliderCheckSize = new Vector2(0.25f, 0.25f);
+    void Awake()
+    {
+        upgradeManager = FindObjectOfType<Upgrades>();
+    }
     void Start()
     {
 
@@ -19,7 +24,10 @@ public class BulletScript : MonoBehaviour
         direction = dir;
         Damage = damage;
         Speed = speed;
-        
+        if(upgradeManager.IncreasedBulletSpeed.owned)
+        {
+            Speed *= 2;
+        }
         var angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.AngleAxis(angle - 90, Vector3.forward);
     }
@@ -41,7 +49,10 @@ public class BulletScript : MonoBehaviour
         if(other.gameObject.tag == "Enemy")
         {
             other.gameObject.GetComponent<HealthManager>().TakeDamage(Damage);
-            Destroy(this.gameObject);
+            if(!upgradeManager.BulletPiercing.owned)
+            {
+                Destroy(this.gameObject);
+            }
         }
     }
 }
