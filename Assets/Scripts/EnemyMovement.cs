@@ -27,7 +27,17 @@ public class EnemyMovement : MonoBehaviour
     [SerializeField] bool canMove = true;
     [SerializeField] bool walking;
     [SerializeField] public float freezeDelay = 2f;
+    [SerializeField] bool shooter = false;
+    [SerializeField] public float shootingRange = 3f;
+    [SerializeField] public LayerMask playerLayer;
+    [SerializeField] public float shootingCooldown = 4f;
+    [SerializeField] public GameObject enemyBullet;
+    [SerializeField] public float bulletDamage;
+    [SerializeField] public float bulletSpeed;
+    private bool stopToShoot = false;
+    private Camera cam;
     private float moveCooldown = 0;
+    private float currentShootingCooldown;
     int index;
     bool IsFacingRight = true;   
     Vector3 target;
@@ -41,6 +51,7 @@ public class EnemyMovement : MonoBehaviour
     void Awake() {
         Player = GameObject.FindWithTag("Player");
         SpawnPoints = GameObject.FindGameObjectsWithTag("EnemySpawnPoint");
+        cam = FindObjectOfType<Camera>();
     }
     void Start()
     {
@@ -91,7 +102,27 @@ public class EnemyMovement : MonoBehaviour
         GetMap();
         path = Program.Solve(tilemap,transform.position,Player.transform.position, walkableGround, walking);
     }
-
+    private bool CanSeePlayer()
+    {
+        var dir = (Player.transform.position - transform.position).normalized;
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, shootingRange, playerLayer);
+        if(hit.collider != null)
+        {
+            return true;
+        }
+        return false;
+    }
+    void Shoot()
+    {
+        if(currentShootingCooldown > 0) return;
+        
+        var dir = (Player.transform.position - transform.position).normalized;
+        var InstantiatedBullet = Instantiate(enemyBullet, transform.position, Quaternion.identity);
+        var script = InstantiatedBullet.GetComponent<EnemyBulletScript>();
+        script.InitializeBullet((new Vector3(dir.x, dir.y, transform.position.z)).normalized,bulletDamage,bulletSpeed);
+        
+        currentShootingCooldown = shootingCooldown;
+    }
     void Update()
     {
         if(moveCooldown > 0)
@@ -99,10 +130,28 @@ public class EnemyMovement : MonoBehaviour
             moveCooldown -= Time.deltaTime;
             return;
         }
+        if(shooter)
+        {
+            Debug.Log(stopToShoot);
+            if(currentShootingCooldown > 0)
+            {
+                currentShootingCooldown -= Time.deltaTime;
+            }
+            if(Vector2.Distance(Player.transform.position,transform.position) < shootingRange && CanSeePlayer())
+            {
+                stopToShoot = true;
+                Shoot();
+            }
+            else
+            {
+                stopToShoot = false;
+            }
+        }
         if(!canMove)
         {
             return;
         }
+        if(stopToShoot) return;
         currentCooldown -= Time.deltaTime;
         if (currentCooldown <= 0)
         {

@@ -3095,6 +3095,15 @@ MonoBehaviour:
   canMove: 1
   walking: 0
   freezeDelay: 2
+  shooter: 0
+  shootingRange: 3
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  shootingCooldown: 4
+  enemyBullet: {fileID: 0}
+  bulletDamage: 0
+  bulletSpeed: 0
   walkableGround: Walkable
 --- !u!61 &5758122921901206305
 BoxCollider2D:
@@ -3208,7 +3217,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56661be1ce4a48045960304d36a79f4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  price: 3
+  price: 2
 --- !u!1 &8911367119263253444
 GameObject:
   m_ObjectHideFlags: 0
