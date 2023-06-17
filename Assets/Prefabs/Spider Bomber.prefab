@@ -439,7 +439,7 @@ MonoBehaviour:
   currentHealth: 0
   canvas: {fileID: 3305172806211790453}
   coin: {fileID: 6292959955629121756, guid: ea32ad9e2768dd34a839f8951a099179, type: 3}
-  coinNumber: 4
+  coinNumber: 2
   loseScreen: {fileID: 0}
   invulnerabilityWindowDuration: 0
   currentInvulnerability: 0

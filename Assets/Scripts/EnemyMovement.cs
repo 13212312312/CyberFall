@@ -12,7 +12,7 @@ public class EnemyMovement : MonoBehaviour
     private GameObject Player;
     private static int EnemyCount;
     [SerializeField] private int id;
-    List<int> colWithID;
+    List<GameObject> colWithID;
     #endregion
 
     #region PARAMETERS
@@ -73,11 +73,12 @@ public class EnemyMovement : MonoBehaviour
     }
     void Start()
     {
-        colWithID = new List<int>();
+        colWithID = new List<GameObject>();
         moveCooldown = freezeDelay;
         EnemyCount+=1;
         id = EnemyCount;
         mapManager = FindObjectOfType<MapManager>();
+        gameObject.GetComponent<HealthManager>().currentInvulnerability = freezeDelay;
         index = 0;
         currentCooldown = 0;
     }
@@ -183,6 +184,11 @@ public class EnemyMovement : MonoBehaviour
                 Destroy(transform.parent.gameObject);
             }
         }
+        colWithID.RemoveAll(item => item == null);
+        if(colWithID.Count == 0)
+        {
+            canMove = true;
+        }
         if(!canMove || exploding || stopToShoot)
         {
             return;
@@ -247,13 +253,13 @@ public class EnemyMovement : MonoBehaviour
             if(other.GetID() > id && other.GetEnemyType() <= Type)
             {
                 canMove = false;
-                if(!colWithID.Contains(other.GetID()))
+                if(!colWithID.Contains(other.gameObject))
                 {
-                    colWithID.Add(other.GetID());
+                    colWithID.Add(other.gameObject);
                 }
             }
         }
-        if(col.gameObject.CompareTag("Player") && ! shooter && ! bomber)
+        if(col.gameObject.CompareTag("Player") && ! shooter && ! bomber && canMove)
         {
             col.gameObject.GetComponent<HealthManager>().TakeDamage(CollisionDamage);
         }
@@ -266,7 +272,7 @@ public class EnemyMovement : MonoBehaviour
             var other = col.gameObject.GetComponent<EnemyMovement>();
             if(other.GetID() > id && other.GetEnemyType() <= Type)
             {
-                colWithID.Remove(other.GetID());
+                colWithID.Remove(other.gameObject);
                 if(colWithID.Count == 0)
                 {
                     canMove = true;
@@ -288,23 +294,6 @@ public class EnemyMovement : MonoBehaviour
     public void ResetCooldown()
     {
         currentCooldown = 0;
-    }
-    void OnDrawGizmosSelected()
-    {
-        if(bomber)
-        {
-            Gizmos.color = Color.red;
-            Gizmos.DrawSphere(transform.position, explosionRadiusTrigger);
-            if(exploding)
-            {
-                Gizmos.DrawSphere(transform.position, explosionRadiusRange);
-            }
-        }
-        if(shooter)
-        {
-            Gizmos.color = Color.magenta;
-            Gizmos.DrawSphere(transform.position, shootingRange);
-        }
     }
 
 }

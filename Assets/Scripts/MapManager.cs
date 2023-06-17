@@ -27,6 +27,11 @@ public class Level{
         Enemies = enemies;
         Enemies.SetActive(false);
         enemyHolderScript = Enemies.GetComponent<EnemyHolder>();
+        if(layoutType == 0 || layoutType == 1)
+        {
+            Completed = true;
+            enteredBattle = true;
+        }
     }
     public void Update()
     {

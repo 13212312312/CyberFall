@@ -9,7 +9,7 @@ public class HealthManager : MonoBehaviour
     [SerializeField] float currentHealth;
     [SerializeField] GameObject canvas;
     [SerializeField] GameObject coin;
-    [SerializeField] int coinNumber = 4;
+    [SerializeField] int coinNumber;
     [SerializeField] GameObject loseScreen;
     [SerializeField] public float invulnerabilityWindowDuration;
     private Upgrades upgradeManager;
@@ -52,7 +52,7 @@ public class HealthManager : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
-        if(tag == "Enemy")
+        if(tag == "Enemy" && currentInvulnerability <= 0)
         {
             currentHealth -= damage;
         }

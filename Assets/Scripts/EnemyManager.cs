@@ -35,4 +35,8 @@ public class EnemyManager : MonoBehaviour
         }
         return false;
     }
+    public void IncreaseMoney()
+    {
+        money += 1;
+    }
 }
