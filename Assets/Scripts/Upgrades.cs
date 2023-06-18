@@ -10,10 +10,17 @@ public class Upgrades : MonoBehaviour
         public string description {get;set;}
         public float price {get; set;}
     }
+    [SerializeField] public bool UpgradePiercing;
+    [SerializeField] public bool UpgradeBulletSpeed;
+    [SerializeField] public bool UpgradeMoreBullets;
+    [SerializeField] public bool UpgradeIncreasedAttackSpeed;
+    [SerializeField] public bool UpgradeIncreasedHealth;
+    [SerializeField] public bool UpgradeIncreasedDamage;
+    [SerializeField] public bool UpgradeIncreasedInvulnerability;
     // works
     public Upgrade BulletPiercing = new Upgrade{
         name = "Bullet Piercing",
-        owned = true,
+        owned = false,
         description = "Allows your bullets to pass through more than one enemy"
     };
     // works
@@ -34,12 +41,6 @@ public class Upgrades : MonoBehaviour
         owned = false,
         description = "Doubles your fire rate"
     };
-
-    public Upgrade ReduceBulletSpread = new Upgrade{
-        name = "Reduce Bullet Spread",
-        owned = false,
-        description = "Reduces the spread of the bullets"
-    };
     // works
     public Upgrade IncreasedHealth = new Upgrade{
         name = "More Health",
@@ -58,4 +59,15 @@ public class Upgrades : MonoBehaviour
         owned = false,
         description = "Doubles the duration you stay in invulnerability window"
     };
+
+    void Awake()
+    {
+        BulletPiercing.owned = UpgradePiercing;
+        IncreasedBulletSpeed.owned = UpgradeBulletSpeed;
+        MoreBullets.owned = UpgradeMoreBullets;
+        IncreasedAttackSpeed.owned = UpgradeIncreasedAttackSpeed;
+        IncreasedHealth.owned = UpgradeIncreasedHealth;
+        IncreasedDamage.owned = UpgradeIncreasedDamage;
+        IncreasedInvulnerability.owned = UpgradeIncreasedInvulnerability;
+    }
 }

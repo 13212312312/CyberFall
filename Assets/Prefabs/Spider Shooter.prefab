@@ -2653,6 +2653,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: 0
+  CollisionDamage: 0
   speed: 3
   cooldown: 0.5
   canMove: 1
@@ -2667,6 +2668,11 @@ MonoBehaviour:
   enemyBullet: {fileID: 3623544230977832052, guid: 66e42093026120642a0a5e9da9c8baff, type: 3}
   bulletDamage: 1
   bulletSpeed: 7
+  bomber: 0
+  explosionRadiusTrigger: 0
+  explosionRadiusRange: 0
+  explosionDamage: 0
+  explosionDetonationDuration: 0
   walkableGround: Walkable
 --- !u!61 &7968765738034485189
 BoxCollider2D:
@@ -2692,7 +2698,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.9919934, y: 1}
+  m_Size: {x: 1.5, y: 1.5}
   m_EdgeRadius: 0
 --- !u!50 &8431667084989730871
 Rigidbody2D:
@@ -2733,6 +2739,8 @@ MonoBehaviour:
   coin: {fileID: 6292959955629121756, guid: ea32ad9e2768dd34a839f8951a099179, type: 3}
   coinNumber: 4
   loseScreen: {fileID: 0}
+  invulnerabilityWindowDuration: 0
+  currentInvulnerability: 0
 --- !u!1 &6489490349495530060
 GameObject:
   m_ObjectHideFlags: 0

@@ -2824,6 +2824,10 @@ MonoBehaviour:
   bulletDamage: 0
   bulletSpeed: 0
   bomber: 0
+  explosionRadiusTrigger: 0
+  explosionRadiusRange: 0
+  explosionDamage: 0
+  explosionDetonationDuration: 0
   walkableGround: Walkable
 --- !u!61 &7862106127859588418
 BoxCollider2D:
@@ -2849,7 +2853,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.9919934, y: 1}
+  m_Size: {x: 1.5, y: 1.5}
   m_EdgeRadius: 0
 --- !u!50 &8542833041424112304
 Rigidbody2D:
@@ -2890,6 +2894,8 @@ MonoBehaviour:
   coin: {fileID: 6292959955629121756, guid: ea32ad9e2768dd34a839f8951a099179, type: 3}
   coinNumber: 4
   loseScreen: {fileID: 0}
+  invulnerabilityWindowDuration: 0
+  currentInvulnerability: 0
 --- !u!1 &6802118562058360125
 GameObject:
   m_ObjectHideFlags: 0
