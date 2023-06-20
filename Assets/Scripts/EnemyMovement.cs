@@ -26,6 +26,8 @@ public class EnemyMovement : MonoBehaviour
     float currentCooldown;
     List<Vector3Int> path;
     List<Vector3> pathBezier;
+    List<int> pascal;
+    int bezierPoints = 8;
     [SerializeField] bool canMove = true;
     [SerializeField] bool walking;
     [SerializeField] public float freezeDelay = 2f;
@@ -82,6 +84,25 @@ public class EnemyMovement : MonoBehaviour
         gameObject.GetComponent<HealthManager>().currentInvulnerability = freezeDelay;
         index = 0;
         currentCooldown = 0;
+        pascal = getRow(bezierPoints);
+    }
+    public static List<int> getRow(int rowIndex)
+    {   
+        List<int> currow = new List<int>();
+        currow.Add(1);
+        if (rowIndex == 0)
+        {
+            return currow;
+        }
+        List<int> prev = getRow(rowIndex - 1);
+
+        for(int i = 1; i < prev.Count; i++)
+        {
+            int curr = prev[i - 1] + prev[i];
+            currow.Add(curr);
+        }
+        currow.Add(1);
+        return currow;
     }
     void OnEnable() {
         moveCooldown = freezeDelay;
@@ -98,13 +119,13 @@ public class EnemyMovement : MonoBehaviour
 
     void DrawPath()
     {
-        if(path.Count <= 1) return;
+        if(pathBezier.Count <= 1) return;
         Vector3 t1,t2;
         t1 = new Vector3(0,0);
         int last = -1;
-        foreach(var point in path)
+        foreach(var point in pathBezier)
         {
-            t2 = tilemap.GetCellCenterWorld(point);
+            t2 = point;
             if (last == -1)
             {
                 last = 1;
@@ -121,8 +142,44 @@ public class EnemyMovement : MonoBehaviour
     {
         GetMap();
         path = Program.Solve(tilemap,transform.position,Player.transform.position, walkableGround, walking);
+        if(!walking)
+            Bezier();
+        else
+        {
+            pathBezier = new List<Vector3>();
+            foreach(var point in path)
+            {
+                pathBezier.Add(tilemap.GetCellCenterWorld(point));
+            }
+        }
+    }
 
-        // pathBezier = Bezier(path);
+    void Bezier()
+    {
+        pathBezier = new List<Vector3>();
+        List<Vector3> points = new List<Vector3>();
+        foreach(var point in path)
+        {
+            points.Add(tilemap.GetCellCenterWorld(point));
+        }
+        int i;
+        for(i = 0; i < points.Count - bezierPoints; i += bezierPoints) {
+            addBezierPoints(points, i, bezierPoints, pascal);
+        }
+        int localBezierPoints = points.Count - i - 1;
+        List<int> localPascal = getRow(localBezierPoints);
+        
+        addBezierPoints(points, i, localBezierPoints,localPascal);
+    }
+    private void addBezierPoints(List<Vector3> points, int index, int localBezierPoints, List<int> localPascal)
+    {
+        for(float u = 0; u < 1; u += 0.1f) {
+            Vector3 point = new Vector3(0,0,0);
+            for(int j = 0; j <= localBezierPoints; j++) {
+                point += localPascal[j] * points[index + j] * Mathf.Pow(u, j) * Mathf.Pow(1.0f - u, localBezierPoints - j);
+            }
+            pathBezier.Add(point);
+        }
     }
     private bool CanSeePlayer()
     {
@@ -205,20 +262,26 @@ public class EnemyMovement : MonoBehaviour
             index = 0;
             GetNextPos();
         }
-        Move();
+        if(pathBezier.Count > 0)
+        {
+            Move();
+        }
     }
 
     void GetNextPos()
     {
-        if (index < path.Count - 1) 
+        if (index < pathBezier.Count - 1) 
         {
-            index+=1;
+            index += 1;
         }
         else
         {
             currentCooldown = 0;
         }
-        target = tilemap.GetCellCenterWorld(path[index]);
+        if(pathBezier.Count > 0)
+        {
+            target = pathBezier[index];
+        }
     }
 
 	private void TurnSide()
