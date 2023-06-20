@@ -98,7 +98,8 @@ namespace Astar
                 int positionx,positiony;
                 positionx=current.X;
                 positiony=current.Y;
-                if(walking && !NearWall(positionx,positiony,map))
+                bool nearWall = NearWall(positionx,positiony,map);
+                if(walking && !nearWall)
                 {
                     //go to closest tile near ground
                     while(map[positiony-1][positionx] == ' ' || map[positiony-1][positionx] == 'B')
@@ -117,16 +118,16 @@ namespace Astar
                             //add corner tile
                             if(lasty < positiony)
                             {
-                                result.Add(new Vector3Int(lastx, positiony, 0) - new Vector3Int(width/2 + 1, height/2 - 1, 0));
+                                result.Add(new Vector3Int(lastx, positiony, nearWall == true ? 1 : 0) - new Vector3Int(width/2 + 1, height/2 - 1, nearWall == true ? 1 : 0));
                             }
                             else
                             {
-                                result.Add(new Vector3Int(positionx, lasty, 0) - new Vector3Int(width/2 + 1, height/2 - 1, 0));
+                                result.Add(new Vector3Int(positionx, lasty, nearWall == true ? 1 : 0) - new Vector3Int(width/2 + 1, height/2 - 1, nearWall == true ? 1 : 0));
                             }
                         }
                     }
                 }
-                result.Add(new Vector3Int(positionx, positiony, 0) - new Vector3Int(width/2 + 1, height/2 - 1, 0));
+                result.Add(new Vector3Int(positionx, positiony, nearWall == true ? 1 : 0) - new Vector3Int(width/2 + 1, height/2 - 1, nearWall == true ? 1 : 0));
                 lastx = positionx;
                 lasty = positiony;
                 current = current.Parent;  

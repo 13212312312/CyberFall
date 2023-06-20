@@ -25,6 +25,7 @@ public class EnemyMovement : MonoBehaviour
     [SerializeField] float cooldown;
     float currentCooldown;
     List<Vector3Int> path;
+    List<Vector3> pathBezier;
     [SerializeField] bool canMove = true;
     [SerializeField] bool walking;
     [SerializeField] public float freezeDelay = 2f;
@@ -120,6 +121,8 @@ public class EnemyMovement : MonoBehaviour
     {
         GetMap();
         path = Program.Solve(tilemap,transform.position,Player.transform.position, walkableGround, walking);
+
+        // pathBezier = Bezier(path);
     }
     private bool CanSeePlayer()
     {
