@@ -357,8 +357,7 @@ MonoBehaviour:
   id: 0
   CollisionDamage: 0
   speed: 6
-  cooldown: 0.5
-  bezierPoints: 8
+  cooldown: 0.25
   canMove: 1
   walking: 0
   freezeDelay: 2

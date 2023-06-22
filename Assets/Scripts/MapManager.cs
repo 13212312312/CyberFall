@@ -149,6 +149,9 @@ public class Level{
 }
 public class MapManager : MonoBehaviour
 {
+    [SerializeField] public GameObject shop;
+    [SerializeField] public GameObject weapons;
+    [SerializeField] public GameObject exit;
     [SerializeField] private Tilemap[] templates;
     Map map;
     private Camera _cam;
@@ -158,17 +161,23 @@ public class MapManager : MonoBehaviour
     public int Height;
     public int StartX;
     public int StartY;
+    private int EndX;
+    private int EndY;
     public int MaxDepth;
     public Vector2Int currentPosition;
     public System.Random random;
     private Level[,] Levels;
+    private Level endLevel;
     public SceneData SceneData;
     private Color _currentForegroundColor;
     public float teleportCooldown = 0f;
     private float currentTeleportCooldown;
     private MinimapImageManager minimapManager;
+    private SaveManager saveManager;
     // Start is called before the first frame update
-    void Awake(){
+    void Awake()
+    {
+        saveManager = FindObjectOfType<SaveManager>();
         minimapManager = FindObjectOfType<MinimapImageManager>();
         currentPosition = new Vector2Int(StartX,StartY);
         _cam = FindObjectOfType<Camera>();
@@ -197,6 +206,11 @@ public class MapManager : MonoBehaviour
                     completedLayout.transform.parent = GameObject.FindWithTag("Grid").transform;
                     Levels[i,j] = new Level(layout,completedLayout,map.Matrix[i,j].RoomType, enemyManager.GenerateEnemies());
                     Levels[i,j].SetMapImage(map.Matrix[i,j].HasNeighbours);
+                    if(map.Matrix[i,j].RoomType == 1)
+                    {
+                        EndX = j;
+                        EndY = i;
+                    }
                 }
             }
         }
@@ -285,6 +299,36 @@ public class MapManager : MonoBehaviour
     {
         currentTeleportCooldown -= Time.deltaTime;
         GetCurrentLevel().Update();
+        if(currentPosition.x == StartX && currentPosition.y == StartY)
+        {
+            if(!shop.activeSelf)
+            {
+                shop.SetActive(true);
+                weapons.SetActive(true);
+            }
+        }
+        else
+        {
+            if(shop.activeSelf)
+            {
+                shop.SetActive(false);
+                weapons.SetActive(false);
+            }
+        }
+        if(currentPosition.x == EndX && currentPosition.y == EndY)
+        {
+            if(!exit.activeSelf)
+            {
+                exit.SetActive(true);
+            }
+        }
+        else
+        {
+            if(exit.activeSelf)
+            {
+                exit.SetActive(false);
+            }
+        }
     }
 
     public Level GetCurrentLevel()
@@ -323,11 +367,11 @@ public class MapManager : MonoBehaviour
         Levels[currentPosition.y,currentPosition.x].Discover();
         minimapManager.TriggerDiscover(currentPosition.y,currentPosition.x);
         minimapManager.UpdatePoint();
+        saveManager.Save();
     }
 
     public int GetMapImageFromIndex(int i,int j)
     {
         return Levels[i,j].GetMapImage();
     }
-
 }

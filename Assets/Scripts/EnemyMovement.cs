@@ -84,9 +84,9 @@ public class EnemyMovement : MonoBehaviour
         gameObject.GetComponent<HealthManager>().currentInvulnerability = freezeDelay;
         index = 0;
         currentCooldown = 0;
-        pascal = getRow(bezierPoints);
+        pascal = getPascalRow(bezierPoints);
     }
-    public static List<int> getRow(int rowIndex)
+    public static List<int> getPascalRow(int rowIndex)
     {   
         List<int> currow = new List<int>();
         currow.Add(1);
@@ -94,7 +94,7 @@ public class EnemyMovement : MonoBehaviour
         {
             return currow;
         }
-        List<int> prev = getRow(rowIndex - 1);
+        List<int> prev = getPascalRow(rowIndex - 1);
 
         for(int i = 1; i < prev.Count; i++)
         {
@@ -142,16 +142,7 @@ public class EnemyMovement : MonoBehaviour
     {
         GetMap();
         path = Program.Solve(tilemap,transform.position,Player.transform.position, walkableGround, walking);
-        if(!walking)
-            Bezier();
-        else
-        {
-            pathBezier = new List<Vector3>();
-            foreach(var point in path)
-            {
-                pathBezier.Add(tilemap.GetCellCenterWorld(point));
-            }
-        }
+        Bezier();
     }
 
     void Bezier()
@@ -167,7 +158,7 @@ public class EnemyMovement : MonoBehaviour
             addBezierPoints(points, i, bezierPoints, pascal);
         }
         int localBezierPoints = points.Count - i - 1;
-        List<int> localPascal = getRow(localBezierPoints);
+        List<int> localPascal = getPascalRow(localBezierPoints);
         
         addBezierPoints(points, i, localBezierPoints,localPascal);
     }

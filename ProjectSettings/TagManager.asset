@@ -8,7 +8,10 @@ TagManager:
   - Grid
   - EnemySpawnPoint
   - Coin
-  - Upgrades
+  - NameManager
+  - CoinPicker
+  - UpgradeManager
+  - Leaderboard
   layers:
   - Default
   - TransparentFX

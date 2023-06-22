@@ -2809,9 +2809,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 0
   CollisionDamage: 2
-  speed: 3
+  speed: 4
   cooldown: 2
-  bezierPoints: 8
   canMove: 1
   walking: 1
   freezeDelay: 2
