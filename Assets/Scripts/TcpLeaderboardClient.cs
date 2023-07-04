@@ -11,18 +11,19 @@ public class TcpLeaderboardClient : MonoBehaviour
 {
 	#region private members
 	private TcpClient socketConnection;
-	private Thread clientReceiveThread;
+	private static Thread clientReceiveThread = null;
 	private NameManager nameManager;
 	private Timer timeManager;
 	Byte[] bytes;
 	[SerializeField] Text leaderboardText;
+	[SerializeField] GameObject Leaderboard;
 	#endregion
 
 	void Awake ()
 	{
 		nameManager = FindObjectOfType<NameManager>();
 		timeManager = FindObjectOfType<Timer>();
-		ConnectToTcpServer();
+		clientReceiveThread = null;
 	}
 
 	void Update ()
@@ -34,6 +35,11 @@ public class TcpLeaderboardClient : MonoBehaviour
 		if (Input.GetKeyUp(KeyCode.Alpha4))
 		{
 			SendMessage(1);
+		}
+		if(clientReceiveThread == null)
+		{
+			clientReceiveThread = new Thread(ConnectToTcpServer);
+			clientReceiveThread.Start();
 		}
 	}
 
@@ -84,6 +90,7 @@ public class TcpLeaderboardClient : MonoBehaviour
 					message += "\n";
 				}
 				leaderboardText.text = message;
+				Leaderboard.SetActive(true);
 			}
 		}
 		catch (SocketException socketException)
@@ -94,6 +101,8 @@ public class TcpLeaderboardClient : MonoBehaviour
 
 	public void SendMessage(int type)
 	{
+		clientReceiveThread.Join();
+		clientReceiveThread = null;
 		if (socketConnection == null)
 		{
 			return;

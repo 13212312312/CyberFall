@@ -46,6 +46,7 @@ public class PlayerMovement : MonoBehaviour
 	private float _hookSpeed;
 	private Vector3 _positionBeforeHook;	
 	private Vector3 _lastKnownPosition;
+	private Vector3 _lastKnownPlayerPosition;
 	private Quaternion _rotationBeforeHook;
 	private float _currentHookDelay;
 	private bool _enlarged;
@@ -331,6 +332,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
 	{
+		_lastKnownPlayerPosition = transform.position;
 		//Handle Run
 		if (!IsDashing && !IsHooking)
 		{
@@ -356,6 +358,7 @@ public class PlayerMovement : MonoBehaviour
 		{
 			CompleteCancelHook();
 		}
+        Debug.DrawLine(transform.position, _lastKnownPlayerPosition, Color.green, 4);
     }
 
     #region INPUT CALLBACKS
@@ -592,7 +595,7 @@ public class PlayerMovement : MonoBehaviour
 		else
 		{
 			_lastKnownPosition = transform.position;
-			Debug.DrawLine (transform.position, _hookPivot, Color.green, 10);
+			Debug.DrawLine (transform.position, _hookPivot, Color.green, 2);
 			transform.RotateAround(_hookPivot, Vector3.forward, _hookSpeed * Time.deltaTime);
 		}
 	}

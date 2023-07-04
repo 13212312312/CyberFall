@@ -132,7 +132,7 @@ public class EnemyMovement : MonoBehaviour
             }
             else
             {
-                Debug.DrawLine (t1, t2, Color.green, 1);
+                Debug.DrawLine (t1, t2, Color.green, cooldown);
             }
             t1 = t2;
         }

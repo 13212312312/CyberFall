@@ -276,6 +276,7 @@ GameObject:
   - component: {fileID: 3501734023726023986}
   - component: {fileID: 3102234911518819008}
   - component: {fileID: 7648790658095587944}
+  - component: {fileID: 1232242753412757444}
   m_Layer: 0
   m_Name: BodyBone
   m_TagString: Enemy
@@ -443,6 +444,19 @@ MonoBehaviour:
   loseScreen: {fileID: 0}
   invulnerabilityWindowDuration: 0
   currentInvulnerability: 0
+--- !u!114 &1232242753412757444
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 484343719179370592}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5767f40eea168b94e9472660b3bf68fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  duration: 5
 --- !u!1 &860365853163220705
 GameObject:
   m_ObjectHideFlags: 0
