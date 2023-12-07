@@ -10,6 +10,7 @@ public class EnemyMovement : MonoBehaviour
     private GameObject[] SpawnPoints;
     private MapManager mapManager;
     private GameObject Player;
+    private Brain brain;
     private static int EnemyCount;
     [SerializeField] private int id;
     List<GameObject> colWithID;
@@ -64,6 +65,7 @@ public class EnemyMovement : MonoBehaviour
     void Awake() {
         Player = GameObject.FindWithTag("Player");
         SpawnPoints = GameObject.FindGameObjectsWithTag("EnemySpawnPoint");
+        brain = GameObject.FindObjectOfType<Brain>();
         cam = FindObjectOfType<Camera>();
         Type = 3;
         if(bomber)
@@ -78,6 +80,7 @@ public class EnemyMovement : MonoBehaviour
     {
         colWithID = new List<GameObject>();
         moveCooldown = freezeDelay;
+        brain.Add(this);
         EnemyCount+=1;
         id = EnemyCount;
         mapManager = FindObjectOfType<MapManager>();
@@ -232,7 +235,7 @@ public class EnemyMovement : MonoBehaviour
                 {
                     Player.GetComponent<HealthManager>().TakeDamage(explosionDamage);
                 }
-                Destroy(transform.parent.gameObject);
+                this.transform.parent.GetComponent<HealthManager>().TakeDamage(9999);
             }
         }
         colWithID.RemoveAll(item => item == null);

@@ -13,6 +13,7 @@ public class HealthManager : MonoBehaviour
     [SerializeField] int coinNumber;
     [SerializeField] GameObject loseScreen;
     [SerializeField] public float invulnerabilityWindowDuration;
+    Brain brain;
     private Upgrades upgradeManager;
     public float currentInvulnerability;
     private bool dead = false;
@@ -20,6 +21,7 @@ public class HealthManager : MonoBehaviour
 
     void Start()
     {
+        brain = GameObject.FindObjectOfType<Brain>();
         upgradeManager = FindObjectOfType<Upgrades>();
         if(upgradeManager.IncreasedHealth.owned && tag == "Player" )
         {
@@ -65,11 +67,13 @@ public class HealthManager : MonoBehaviour
         healthBar.value = currentHealth;
         if(currentHealth <= 0)
         {
-            if(tag == "Enemy")
+            if(tag == "Enemy" && !dead)
             {
                 SpawnCoins();
                 dead = true;
-                Destroy(this.gameObject.transform.parent.gameObject);
+                EnemyMovement script = GetComponent<EnemyMovement>();
+                int type = script.GetEnemyType();
+                bool x = brain.Remove(script,type);
             }
             if(tag == "Player")
             {

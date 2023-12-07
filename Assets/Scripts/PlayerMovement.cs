@@ -358,7 +358,6 @@ public class PlayerMovement : MonoBehaviour
 		{
 			CompleteCancelHook();
 		}
-        Debug.DrawLine(transform.position, _lastKnownPlayerPosition, Color.green, 4);
     }
 
     #region INPUT CALLBACKS
