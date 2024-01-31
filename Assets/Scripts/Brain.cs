@@ -5,12 +5,16 @@ using UnityEngine;
 public class Brain : MonoBehaviour
 {
     List<EnemyMovement> list = new List<EnemyMovement>();
+    GameObject Player;
+    MapManager mapManager;
     int[] old = new int[30];
     int[] current = new int[30];
     public int number = 3;
     void Start()
     {
-        for(int i = 0; i < 30; i++)
+        Player = GameObject.FindWithTag("Player");
+        mapManager = GameObject.FindObjectOfType<MapManager>();
+        for (int i = 0; i < 30; i++)
         {
             current[i] = 0;
         }
@@ -26,11 +30,13 @@ public class Brain : MonoBehaviour
         list.Remove(enemy);
         current[type]--;
         Destroy(enemy.transform.parent.gameObject);
+        Debug.Log(CreateMessage().SaveToString());
         return true;
     }
     // Update is called once per frame
     void Update()
     {
+        //if (working) return;
         if(compareOldWithNew())
         {
             Start_Thinking();
@@ -60,11 +66,20 @@ public class Brain : MonoBehaviour
     }
     void Start_Thinking()
     {
+        //working = true;
         int count = 0;
         for(int i = 0; i < 30; i++)
         {
             count += current[i];
         }
-        Debug.Log(count);
+    }
+
+    Message CreateMessage()
+    {
+        return new Message(mapManager.GetCurrentLevel().LayoutType,
+            Player.GetComponent<HealthManager>().currentHealth,
+            Player.transform.position.x,
+            Player.transform.position.y,
+            list);
     }
 }

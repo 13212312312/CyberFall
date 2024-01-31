@@ -231,11 +231,13 @@ public class EnemyMovement : MonoBehaviour
             currentExplosionTime += Time.deltaTime;
             if(currentExplosionTime >= explosionDetonationDuration)
             {
-                if(Vector2.Distance(Player.transform.position,transform.position) < explosionRadiusRange)
+                var scrpt = GetComponent<HealthManager>();
+                if (Vector2.Distance(Player.transform.position,transform.position) < explosionRadiusRange)
                 {
                     Player.GetComponent<HealthManager>().TakeDamage(explosionDamage);
                 }
-                this.transform.parent.GetComponent<HealthManager>().TakeDamage(9999);
+                scrpt.TakeDamage(9999);
+                return;
             }
         }
         colWithID.RemoveAll(item => item == null);
@@ -307,9 +309,12 @@ public class EnemyMovement : MonoBehaviour
 
     void OnTriggerStay2D(Collider2D col)
     {
+        if (this.gameObject == null || col == null)
+            return;
         if(col.gameObject.CompareTag("Enemy"))
         {
             var other = col.gameObject.GetComponent<EnemyMovement>();
+            if (other == null) return;
             if(other.GetID() > id && other.GetEnemyType() <= Type)
             {
                 canMove = false;

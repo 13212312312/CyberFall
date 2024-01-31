@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 public class HealthManager : MonoBehaviour
 {
     [SerializeField] float health;
-    [SerializeField] float currentHealth;
+    [SerializeField] public float currentHealth;
     [SerializeField] GameObject canvas;
     [SerializeField] GameObject coin;
     [SerializeField] int coinNumber;
@@ -74,6 +74,7 @@ public class HealthManager : MonoBehaviour
                 EnemyMovement script = GetComponent<EnemyMovement>();
                 int type = script.GetEnemyType();
                 bool x = brain.Remove(script,type);
+                Destroy(this.gameObject.transform.parent.gameObject);
             }
             if(tag == "Player")
             {

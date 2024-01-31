@@ -15,7 +15,7 @@ public class Level{
     private int imageRotation;
     private bool enteredBattle;
     private EnemyHolder enemyHolderScript;
-    // de facut kamikaze
+
     public Level(Tilemap layout, Tilemap completedLayout, int layoutType, GameObject enemies)
     {
         enteredBattle = false;
