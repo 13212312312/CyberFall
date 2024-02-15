@@ -25,8 +25,8 @@ public class EnemyMovement : MonoBehaviour
     [SerializeField] float speed;
     [SerializeField] float cooldown;
     float currentCooldown;
-    List<Vector3Int> path;
-    List<Vector3> pathBezier;
+    public List<Vector3Int> path;
+    public List<Vector3> pathBezier;
     List<int> pascal;
     int bezierPoints = 8;
     [SerializeField] bool canMove = true;

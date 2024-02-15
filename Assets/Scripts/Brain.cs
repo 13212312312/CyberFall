@@ -1,12 +1,21 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
+using System.Text;
+using System.Net.Sockets;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Brain : MonoBehaviour
 {
     List<EnemyMovement> list = new List<EnemyMovement>();
     GameObject Player;
     MapManager mapManager;
+    private TcpClient socketConnection;
+    float cooldown = 0.5f;
+    float currentcooldown = 0;
+    Byte[] bytes;
     int[] old = new int[30];
     int[] current = new int[30];
     public int number = 3;
@@ -37,6 +46,7 @@ public class Brain : MonoBehaviour
     void Update()
     {
         //if (working) return;
+        currentcooldown = Math.Max(0, currentcooldown - Time.deltaTime);
         if(compareOldWithNew())
         {
             Start_Thinking();
@@ -72,6 +82,44 @@ public class Brain : MonoBehaviour
         {
             count += current[i];
         }
+        if (count == 0) return;
+        if (currentcooldown != 0)
+        {
+            return;
+        }
+        currentcooldown = cooldown;
+        var message = CreateMessage();
+        var message2 = CreateResponse();
+        var thrd = new Thread(() => { sendMessage(message, message2); });
+        thrd.Start();
+    }
+    void sendMessage(Message m, Response r)
+    {
+        try
+        {
+            socketConnection = new TcpClient("localhost", 8053);
+            bytes = new Byte[4096];
+        }
+        catch (Exception e)
+        {
+            Debug.Log("On client connect exception " + e);
+            return;
+        }
+
+        try
+        {
+            NetworkStream stream = socketConnection.GetStream();
+            if (stream.CanWrite)
+            {
+                string msg = "{ \"message\":" + m.SaveToString() + ",\"response\":" + r.SaveToString() + "}";
+                byte[] clientMessageAsByteArray = Encoding.ASCII.GetBytes(msg);
+                stream.Write(clientMessageAsByteArray, 0, clientMessageAsByteArray.Length);
+            }
+        }
+        catch (SocketException socketException)
+        {
+            Debug.Log("Socket exception: " + socketException);
+        }
     }
 
     Message CreateMessage()
@@ -81,5 +129,24 @@ public class Brain : MonoBehaviour
             Player.transform.position.x,
             Player.transform.position.y,
             list);
+    }
+    Response CreateResponse()
+    {
+        List<Vector2Int> poz = new List<Vector2Int>();
+        foreach (var enemy in list)
+        {
+            Vector2Int pozEnemy;
+            if(enemy.path == null || enemy.path.Count < 1)
+            {
+                pozEnemy = new Vector2Int((int)(enemy.gameObject.transform.position.x), (int)(enemy.gameObject.transform.position.x));
+            }
+            else
+            {
+                Vector3 target = enemy.path[UnityEngine.Random.Range(1, enemy.path.Count - 1)];
+                pozEnemy = new Vector2Int((int)(target.x), (int)(target.y));
+            }
+            poz.Add(pozEnemy);
+        }
+        return new Response(poz);
     }
 }
