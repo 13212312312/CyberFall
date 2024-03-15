@@ -90,6 +90,15 @@ public class Brain : MonoBehaviour
         currentcooldown = cooldown;
         var message = CreateMessage();
         var message2 = CreateResponse();
+        foreach(var data in message2.enemies)
+        {
+            if (data.pozx != 0 && data.pozy != 0)
+            {
+                Debug.DrawLine(new Vector2(data.pozx - 0.2f, data.pozy - 0.2f), new Vector2(data.pozx + 0.2f, data.pozy + 0.2f), Color.red, 0.3f);
+                Debug.DrawLine(new Vector2(data.pozx + 0.2f, data.pozy - 0.2f), new Vector2(data.pozx - 0.2f, data.pozy + 0.2f), Color.red, 0.3f);
+            }
+            //Debug.DrawLine(new Vector2(data.pozx + 1, data.pozy - 1), new Vector2(data.pozx + 1, data.pozy - 1), Color.red, 1);
+        }
         var thrd = new Thread(() => { sendMessage(message, message2); });
         thrd.Start();
     }

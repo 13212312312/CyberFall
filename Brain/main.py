@@ -4,8 +4,14 @@ import json
 import DQN
 import numpy as np
 
+#   netstat -ano | findstr :8053
+#   taskkill /PID 28488 /F
+
 HOST = "127.0.0.1"  # Standard loopback interface address (localhost)
 PORT = 8053  # Port to listen on (non-privileged ports are > 1023)
+thrd = 0
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # or any {'0', '1', '2'}
 def inputToArray(inp):
     list = []
     list += [inp["player_health"]]
@@ -37,7 +43,7 @@ def getScore(input,output):
     return score
 
 
-def createThread(connection, address):
+def createThread(connection, address, nr):
     with connection:
         print(f"Connected by {address}")
         while True:
@@ -60,11 +66,19 @@ def createThread(connection, address):
             # print(outp)
 
             # Apply network
-            loss = DQN.train_step(input_array, output_array)
-            generated_output = DQN.network.predict(input_array)
-            print(generated_output)
-            generated_score = getScore(input_array, generated_output[0])
-            print(f"Initial score: {score}, Network score: {generated_score}")
+            final = 0
+            with open("test.txt", "a") as myfile:
+                myfile.write(f"{nr}. Initial score: {score}\n")
+                for i in range(0,100):
+                    loss = DQN.train_step(input_array, output_array)
+                    generated_output = DQN.network.predict(input_array)
+
+                    generated_score = getScore(input_array, generated_output[0])
+                    final = generated_score
+                    if i % 20 == 0:
+                        myfile.write(f"{nr}. {generated_score}\n")
+                myfile.write(f"{nr}. {final}\n")
+
 
 
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
@@ -72,5 +86,6 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     while True:
         s.listen()
         conn, addr = s.accept()
-        thread = threading.Thread(target=createThread, args=(conn, addr))
+        thrd = thrd + 1
+        thread = threading.Thread(target=createThread, args=(conn, addr, thrd))
         thread.start()
